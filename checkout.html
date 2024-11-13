@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .cart-summary {
+            margin-bottom: 20px;
+        }
+        .cart-summary h2 {
+            margin-top: 0;
+        }
+        .cart-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .cart-summary li {
+            margin-bottom: 10px;
+        }
+        .checkout-form {
+            margin-top: 20px;
+        }
+        .checkout-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .checkout-form input, .checkout-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .checkout-form button {
+            padding: 10px 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .checkout-form button:hover {
+            background-color: #219150;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Checkout</h1>
+        
+        <div class="cart-summary">
+            <h2>Shopping Cart Summary</h2>
+            <ul id="cartSummaryList">
+            </ul>
+            <p>Total: ₹<span id="checkoutTotalPrice">0.00</span></p>
+        </div>
+
+        <div class="checkout-form">
+            <h2>Shipping Information</h2>
+            <form id="shippingForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" rows="4" required></textarea>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone" required>
+                <button type="submit">Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function displayCartSummary() {
+            const cartSummaryList = document.getElementById('cartSummaryList');
+            const totalPriceElement = document.getElementById('checkoutTotalPrice');
+            cartSummaryList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(product => {
+                total += product.price * 80;
+                const listItem = document.createElement('li');
+                listItem.textContent = `${product.title} - ₹${(product.price * 80).toFixed(2)}`;
+                cartSummaryList.appendChild(listItem);
+            });
+
+            totalPriceElement.textContent = total.toFixed(2);
+        }
+
+        document.getElementById('shippingForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Order placed successfully!');
+            localStorage.removeItem('cart');
+            window.location.href = 'main2.html'; 
+        });
+
+        displayCartSummary();
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Men's Clothing Sub-Categories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; 
+        }
+        .category-card {
+            flex: 1 1 calc(25% - 40px);
+            margin: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        .category-card img {
+            width: 100%;
+            height: 300px; 
+            object-fit: cover; 
+        }
+        .category-card h3 {
+            padding: 15px;
+            margin: 0;
+            font-size: 20px;
+            text-align: center;
+            background-color: #000000;
+            color: #fff;
+        }
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="t-shirts.html" class="category-card">
+            <img src="images/t-shirt.jpg" alt="T-Shirts">
+            <h3>T-Shirts</h3>
+        </a>
+        <a href="t-shirts.html" class="category-card">
+            <img src="images/jeans.jpg" alt="Jeans">
+            <h3>Jeans</h3>
+        </a>
+        <a href="t-shirts.html" class="category-card">
+            <img src="images/shoes.jpg" alt="Footwear">
+            <h3>Footwear</h3>
+        </a>
+    </div>
+</body>
+</html>

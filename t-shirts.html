@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Product Listing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .filter-section input {
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            width: calc(25% - 20px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .product-card img:hover {
+            transform: scale(1.2);
+        }
+        .product-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .product-card p {
+            font-size: 16px;
+            margin: 5px 0;
+            color: #555;
+        }
+        .product-card .price {
+            font-size: 20px;
+            color: #e67e22;
+            margin-bottom: 10px;
+        }
+        .product-card .rating {
+            font-size: 18px;
+            color: #f39c12;
+            margin: 5px 0;
+        }
+        .product-card button {
+            padding: 10px 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product-card button:hover {
+            background-color: #219150;
+        }
+        .cart {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        .cart button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .cart button:hover {
+            background-color: #219150;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clothing Products</h1>
+        
+        <div class="filter-section">
+            <label for="minPrice">Min Price:</label>
+            <input type="number" id="minPrice" placeholder="0">
+            <label for="maxPrice">Max Price:</label>
+            <input type="number" id="maxPrice" placeholder="1000">
+            <button onclick="filterProducts()">Apply Filter</button>
+        </div>
+
+        <div id="productList" class="product-list">
+        </div>
+
+        <div id="cart" class="cart">
+            <h2>Shopping Cart</h2>
+            <ul id="cartItems">
+            </ul>
+            <p>Total: ₹<span id="totalPrice">0.00</span></p>
+            <button id="checkoutButton">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        let products = [];
+        let cart = [];
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch('https://fakestoreapi.com/products?limit=30');
+                let allProducts = await response.json();
+                
+                // Filter for all clothing products (men's and women's clothing)
+                products = allProducts.filter(product => product.category === "men's clothing" || product.category === "women's clothing");
+                
+                displayProducts(products);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+
+        function displayProducts(productArray) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            productArray.forEach(product => {
+                const rating = Math.floor(Math.random() * 3) + 3; 
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.title}" onclick="zoomImage(this)">
+                    <h3>${product.title}</h3>
+                    <p>${product.description}</p>
+                    <p class="price">₹${(product.price * 80).toFixed(2)}</p>
+                    <p class="rating">${'⭐'.repeat(rating)}</p>
+                    <button onclick="addToCart(${product.id})">Add to Cart</button>
+                `;
+                productList.appendChild(productCard);
+            });
+        }
+
+        function filterProducts() {
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            const filteredProducts = products.filter(product => (product.price * 80) >= minPrice && (product.price * 80) <= maxPrice);
+            displayProducts(filteredProducts);
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach((product, index) => {
+                total += product.price * 80;
+                const listItem = document.createElement('li');
+                listItem.textContent = `${product.title} - ₹${(product.price * 80).toFixed(2)}`;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.style.marginLeft = '10px';
+                removeButton.onclick = () => {
+                    cart.splice(index, 1);
+                    updateCart();
+                };
+                listItem.appendChild(removeButton);
+                cartItems.appendChild(listItem);
+            });
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+        }
+
+        function checkout() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = 'checkout.html';
+        }
+
+        function zoomImage(imgElement) {
+            const src = imgElement.src;
+            const zoomedImg = document.createElement('img');
+            zoomedImg.src = src;
+            zoomedImg.style.position = 'fixed';
+            zoomedImg.style.top = '50%';
+            zoomedImg.style.left = '50%';
+            zoomedImg.style.transform = 'translate(-50%, -50%) scale(2)';
+            zoomedImg.style.border = '5px solid #ddd';
+            zoomedImg.style.borderRadius = '10px';
+            zoomedImg.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+            zoomedImg.style.zIndex = '1000';
+            zoomedImg.onclick = () => {
+                document.body.removeChild(zoomedImg);
+            };
+            document.body.appendChild(zoomedImg);
+        }
+
+        // Attach event listener to checkout button
+        document.getElementById('checkoutButton').addEventListener('click', checkout);
+
+        fetchProducts();
+    </script>
+</body>
+</html>
